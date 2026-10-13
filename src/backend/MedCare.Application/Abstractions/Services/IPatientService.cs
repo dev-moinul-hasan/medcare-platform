@@ -1,8 +1,7 @@
 ﻿using MedCare.Application.DTOs.Common;
-using MedCare.Application.DTOs.Requests;
+using MedCare.Application.DTOs.Requests.Party;
 
 namespace MedCare.Application.Abstractions.Services;
-
 public interface IPatientService
 {
     Task<int> CreatePatientAsync(PatientReqDTO command);

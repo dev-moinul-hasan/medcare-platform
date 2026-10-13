@@ -1,6 +1,6 @@
-﻿namespace MedCare.Application.DTOs.Responses
+﻿namespace MedCare.Application.DTOs.Responses.party
 {
-    sealed record class PatientResponse
+    sealed record class PatientResp
     {
         public int PartyId { get; set; }
 

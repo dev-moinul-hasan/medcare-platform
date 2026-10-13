@@ -1,0 +1,16 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace MedCare.Application.DTOs.Requests.Core;
+
+public sealed record DistrictReqDTO
+{
+    [Required]
+    [MaxLength(100)]
+    public string? DistrictName { get; set; }
+
+    [Required]
+    public int StateId { get; set; }
+
+    [Required]
+    public bool IsActive { get; set; } = true;
+}
