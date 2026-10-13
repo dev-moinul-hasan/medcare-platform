@@ -1,6 +1,6 @@
 ﻿using MedCare.Application.Abstractions.Services;
 using MedCare.Application.DTOs.Common;
-using MedCare.Application.DTOs.Requests;
+using MedCare.Application.DTOs.Requests.Party;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;

@@ -8,7 +8,7 @@ public class ProjHelpEnums
         BloodGroup = 6,
         MaritalStatus = 10,
         ProviderType = 14,
-        Specialty = 15,
+        Occupation = 15,
         OrganizationType = 17,
         EncounterType = 18,
         EncounterStatus = 19,

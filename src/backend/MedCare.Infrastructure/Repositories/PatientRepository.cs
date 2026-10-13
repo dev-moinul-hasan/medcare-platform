@@ -2,7 +2,7 @@
 using MedCare.Application.Abstractions.Others;
 using MedCare.Application.Abstractions.Repositories;
 using MedCare.Application.DTOs.Common;
-using MedCare.Application.DTOs.Requests;
+using MedCare.Application.DTOs.Requests.Party;
 using Microsoft.Extensions.Logging;
 using System.Data;
 
@@ -31,9 +31,21 @@ namespace MedCare.Infrastructure.Repositories
             dp.Add("@DateOfBirth", command.DateOfBirth, DbType.Date);
             dp.Add("@GenderId", command.GenderId, DbType.Int32);
             dp.Add("@MobileNo", command.MobileNo, DbType.String, ParameterDirection.Input, 20);
-            dp.Add("@NationalId", command.NationalId, DbType.String, ParameterDirection.Input, 30);
+            dp.Add("@Email", command.Email, DbType.String, ParameterDirection.Input, 20);
+            dp.Add("@Address", command.Address, DbType.String, ParameterDirection.Input, 200);
+            dp.Add("@City", command.City, DbType.String, ParameterDirection.Input, 100);
+            dp.Add("@PinCode", command.PinCode, DbType.String, ParameterDirection.Input, 20);
+
+            dp.Add("@DistrictId", command.DistrinctId, DbType.Int32);
+            dp.Add("@StateId", command.StateId, DbType.Int32);
+            dp.Add("@CountryId", command.CountryId, DbType.Int32);
+            dp.Add("@RelagionId", command.RelagionId, DbType.Int32);
             dp.Add("@PrimaryBranchId", command.PrimaryBranchId, DbType.Int32);
+
             dp.Add("@BloodGroupId", command.BloodGroupId, DbType.Int32);
+            dp.Add("@OccupationId", command.OccoupationId, DbType.Int32);
+            dp.Add("@MaritalStatusId", command.MaritalStatus, DbType.Int32); 
+            dp.Add("@RegFees", command.RegFees, DbType.Decimal);
             dp.Add("@UserId", userId, DbType.Int32);
             dp.Add("@error", dbType: DbType.Int32, direction: ParameterDirection.Output);
             dp.Add("@OutID", dbType: DbType.Int32, direction: ParameterDirection.Output);
@@ -56,8 +68,8 @@ namespace MedCare.Infrastructure.Repositories
 
         public async Task<PatientReqDTO?> GetPatientByIdAsync(int patientId)
         {
-            const string sql = @"SELECT pe.FirstName, pe.MiddleName, pe.LastName, pe.DateOfBirth, pe.GenderId, pe.MobileNo, pe.NationalId, pa.BloodGroupId FROM party.Person pe
-                                LEFT JOIN party.Patient pa ON pe.PartyId = pa.PatientId WHERE pe.PartyId = @PatientId";
+            const string sql = @"SELECT pe.PartyId, pe.FirstName, pe.MiddleName, pe.LastName, pe.DateOfBirth, pe.GenderId, pe.MobileNo, pe.Address, pe.City, pe.PinCode, pe.DistrictId, pe.StateId, pe.CountryId, pe.ReligionId pa.BloodGroupId, pa.OccupationId, pa.MaritalStatusId,b.Amount FROM party.Person pe
+                                LEFT JOIN party.Patient pa ON pe.PartyId = pa.PatientId WHERE pe.PartyId = @PatientId LEFT JOIN billin.Charge  b ON pa.PatientId = b.PatientId AND ServiceId = 2501";
 
             using var connection = connectionFactory.CreateConnection();
 
@@ -121,17 +133,17 @@ namespace MedCare.Infrastructure.Repositories
 
         public async Task<bool> IsDuplicateAsync(PatientReqDTO patient)
         {
-            const string sql = @"SELECT CASE WHEN EXISTS (SELECT 1 FROM party.Person WHERE MobileNo = @MobileNo OR (@NationalId IS NOT NULL AND NationalId] = @NationalId)) THEN 1 ELSE 0 END";
+            const string sql = @"SELECT CASE WHEN EXISTS (SELECT 1 FROM party.Person WHERE MobileNo = @MobileNo OR (@CountryId IS NOT NULL AND CountryId = @CountryId)) THEN 1 ELSE 0 END";
 
             using var connection = connectionFactory.CreateConnection();
 
             try
             {
-                var isDuplicate = await connection.ExecuteScalarAsync<bool>(sql, new { patient.MobileNo, patient.NationalId });
+                var isDuplicate = await connection.ExecuteScalarAsync<bool>(sql, new { patient.MobileNo, patient.CountryId });
                 if (isDuplicate)
                 {
                     logger.LogWarning("Duplicate patient detected: Mobile={Mobile}, NationalId={NationalId}",
-                        patient.MobileNo, patient.NationalId);
+                        patient.MobileNo, patient.CountryId);
                 }
                 return isDuplicate;
             }

@@ -1,7 +1,7 @@
 ﻿using MedCare.Application.Abstractions.Repositories;
 using MedCare.Application.Abstractions.Services;
 using MedCare.Application.DTOs.Common;
-using MedCare.Application.DTOs.Requests;
+using MedCare.Application.DTOs.Requests.Party;
 using Microsoft.Extensions.Logging;
 using static MedCare.Application.Exceptions.ApplicationExceptions;
 
@@ -20,8 +20,8 @@ namespace MedCare.Application.Services
 
             if (isDuplicate)
             {
-                _logger.LogWarning("Patient creation failed - duplicate found: {Mobile}/{NationalId}",
-                    patient.MobileNo, patient.NationalId);
+                _logger.LogWarning("Patient creation failed - duplicate found: {Mobile}/{CountryId}",
+                    patient.MobileNo, patient.CountryId);
                 throw new BusinessRuleException(
                     "A patient with this mobile number or national ID is already registered in the system."
                 );
